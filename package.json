@@ -1,0 +1,19 @@
+{
+  "name": "line-member-card",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Arahabica <r.sasage@gmail.com>",
+  "license": "MIT",
+  "main": "handler.js",
+  "scripts": {
+    "deploy": "yarn front:build && serverless deploy",
+    "front:build": "cd frontend && yarn build && cd ..",
+    "print": "sls print --format yaml --path custom.app",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "serverless-deployment-bucket": "^1.4.1",
+    "serverless-layers": "^2.3.3",
+    "serverless-s3-sync": "^1.17.0"
+  }
+}

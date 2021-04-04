@@ -1,0 +1,22 @@
+serverless create --template aws-nodejs --name line-member-card --path line-member-card
+
+serverless-express https://zenn.dev/yuta_saito/articles/8b543a1957c375593ee5
+
+```
+npm install express --save
+npm install @vendia/serverless-express --save
+```
+
+
+
+---
+https://line-member-card-dev.s3-ap-northeast-1.amazonaws.com/index.html
+
+
+
+aws ssm put-parameter \
+    --name "/dev/line-member-card/LIFF_ID" \
+    --value "1655796157-AzeYVX4o" \
+    --type String
+
+aws ssm get-parameter --name "/dev/line-member-card/LINE_CHANNEL_ID" --query Parameter.Value

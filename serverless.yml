@@ -1,0 +1,186 @@
+service: line-member-card
+
+frameworkVersion: ">=1.34.0 <2.0.0"
+custom:
+  app:
+    PUBLIC_BUCKET: ${self:service}-${opt:stage, self:provider.stage}
+    DEPLOYMENT_BUCKET: ${self:service}-${opt:stage, self:provider.stage}-deployment
+    S3_WEB_DOMAIN: ${self:custom.app.PUBLIC_BUCKET}.s3-website-${self:provider.region}.amazonaws.com
+    LINE_CHANNEL_ID: ${ssm:/${opt:stage, self:provider.stage}/${self:service}/LINE_CHANNEL_ID}
+    LIFF_ID: ${ssm:/${opt:stage, self:provider.stage}/${self:service}/LIFF_ID}
+    USER_TABLE: ${self:service}-${opt:stage, self:provider.stage}-user
+    VISIT_TABLE: ${self:service}-${opt:stage, self:provider.stage}-visit
+    ENDPOINT: ${cf:${self:service}-${opt:stage, self:provider.stage}.ServiceEndpoint}
+    URL: ${cf:${self:service}-${opt:stage, self:provider.stage}.StaticContentsCloudFrontUrl}
+  s3Sync:
+    - bucketName: ${self:custom.app.PUBLIC_BUCKET}
+      localDir: frontend/dist/
+  serverless-layers:
+    dependenciesPath: ./backend/package.json
+plugins:
+  - serverless-s3-sync
+  - serverless-deployment-bucket
+  - serverless-layers
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: ap-northeast-1
+  environment:
+    LINE_CHANNEL_ID: ${self:custom.app.LINE_CHANNEL_ID}
+    USER_TABLE: ${self:custom.app.USER_TABLE}
+    VISIT_TABLE: ${self:custom.app.VISIT_TABLE}
+    TZ: Asia/Tokyo
+  deploymentBucket:
+    name: ${self:custom.app.DEPLOYMENT_BUCKET}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:custom.app.USER_TABLE}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:custom.app.VISIT_TABLE}"
+    #- Effect: Allow
+    #  Action:
+    #    - 's3:*'
+    #  Resource: 'arn:aws:s3:::${self:custom.app.PUBLIC_BUCKET}/*'
+package:
+  exclude:
+    - backend/node_modules/**
+    - backend/yarn.lock
+    - frontend/**
+functions:
+  backend:
+    handler: backend/lambda.handler
+    events:
+      - http:
+          path: /
+          method: ANY
+          cors: true
+            #origin: '*'
+            #headers:
+            #  - Content-Type
+            #  - X-Amz-Date
+            #  - Authorization
+            #  - X-Api-Key
+            #  - X-Amz-Security-Token
+            #  - X-Amz-User-Agent
+            #allowCredentials: true
+      - http:
+          path: '{proxy+}'
+          method: ANY
+          cors: true
+            #origin: '*'
+            #headers:
+            #  - Content-Type
+            #  - X-Amz-Date
+            #  - Authorization
+            #  - X-Api-Key
+            #  - X-Amz-Security-Token
+            #  - X-Amz-User-Agent
+            #allowCredentials: true
+resources:
+  Resources:
+    S3Storage:
+      Type: 'AWS::S3::Bucket'
+      Properties:
+        AccessControl: PublicRead
+        BucketName: '${self:custom.app.PUBLIC_BUCKET}'
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: index.html
+    StaticSiteS3BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: S3Storage
+        PolicyDocument:
+          Statement:
+            - Sid: PublicReadGetObject
+              Effect: Allow
+              Principal: "*"
+              Action:
+                - s3:GetObject
+              Resource:
+                Fn::Join: ["", ["arn:aws:s3:::",{"Ref": "S3Storage"},"/*"]]
+    StaticContentsCloudFront:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Enabled: true
+          Comment: "Delivery static contents"
+          PriceClass: PriceClass_200
+          DefaultRootObject: index.html
+          Origins:
+            - Id: S3Origin
+              DomainName: ${self:custom.app.S3_WEB_DOMAIN}
+              CustomOriginConfig:
+                OriginProtocolPolicy: match-viewer
+          DefaultCacheBehavior:
+            AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: true
+            DefaultTTL: 900
+            MaxTTL: 1200
+            MinTTL: 600
+            ForwardedValues:
+              QueryString: true
+            SmoothStreaming: false
+            TargetOriginId: S3Origin
+            ViewerProtocolPolicy: https-only
+    StaticCloudFrontOriginAccessIdentity:
+      Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+      Properties:
+        CloudFrontOriginAccessIdentityConfig:
+          Comment:
+            Ref: AWS::StackName
+    UserTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.app.USER_TABLE}
+    VisitTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.app.VISIT_TABLE}
+  Outputs:
+    StaticContentsCloudFrontUrl:
+      Value:
+        Fn::Join:
+          - ""
+          - - "https://"
+            - Fn::GetAtt:
+                - StaticContentsCloudFront
+                - DomainName

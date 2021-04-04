@@ -1,0 +1,15 @@
+{
+  "name": "line-member-card-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@vendia/serverless-express": "^4.3.4",
+    "express": "^4.17.1"
+  }
+}
