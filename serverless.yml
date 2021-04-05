@@ -61,29 +61,35 @@ functions:
       - http:
           path: /
           method: ANY
-          cors: true
-            #origin: '*'
-            #headers:
-            #  - Content-Type
-            #  - X-Amz-Date
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Access-Control-Allow-Headers
+              - Access-Control-Allow-Origin
+              - X-Amz-Date
+              - x-requested-with
             #  - Authorization
             #  - X-Api-Key
             #  - X-Amz-Security-Token
             #  - X-Amz-User-Agent
-            #allowCredentials: true
+            allowCredentials: true
       - http:
           path: '{proxy+}'
           method: ANY
-          cors: true
-            #origin: '*'
-            #headers:
-            #  - Content-Type
-            #  - X-Amz-Date
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Access-Control-Allow-Headers
+              - Access-Control-Allow-Origin
+              - X-Amz-Date
+              - x-requested-with
             #  - Authorization
             #  - X-Api-Key
             #  - X-Amz-Security-Token
             #  - X-Amz-User-Agent
-            #allowCredentials: true
+            allowCredentials: true
 resources:
   Resources:
     S3Storage:
@@ -93,7 +99,6 @@ resources:
         BucketName: '${self:custom.app.PUBLIC_BUCKET}'
         WebsiteConfiguration:
           IndexDocument: index.html
-          ErrorDocument: index.html
     StaticSiteS3BucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
@@ -117,6 +122,12 @@ resources:
           PriceClass: PriceClass_200
           DefaultRootObject: index.html
           Origins:
+            #- Id: ApiOrigin
+            #  #DomainName: https://4rcgec6tm3.execute-api.ap-northeast-1.amazonaws.com/dev
+            #  DomainName: 4rcgec6tm3.execute-api.ap-northeast-1.amazonaws.com
+            #  #OriginPath: /dev/
+            #  CustomOriginConfig:
+            #    OriginProtocolPolicy: match-viewer
             - Id: S3Origin
               DomainName: ${self:custom.app.S3_WEB_DOMAIN}
               CustomOriginConfig:
@@ -129,14 +140,36 @@ resources:
               - HEAD
               - GET
             Compress: true
-            DefaultTTL: 900
-            MaxTTL: 1200
-            MinTTL: 600
+            DefaultTTL: 0
+            MaxTTL: 0
+            MinTTL: 0
             ForwardedValues:
               QueryString: true
             SmoothStreaming: false
             TargetOriginId: S3Origin
             ViewerProtocolPolicy: https-only
+          #CacheBehaviors:
+          #  - TargetOriginId: ApiOrigin
+          #    PathPattern: "/api/*"
+          #    AllowedMethods:
+          #      - HEAD
+          #      - GET
+          #      - POST
+          #      - PUT
+          #      - DELETE
+          #      - OPTIONS
+          #      - PATCH
+          #    CachedMethods:
+          #      - HEAD
+          #      - GET
+          #    ForwardedValues:
+          #      QueryString: true
+          #    ViewerProtocolPolicy: https-only
+          CustomErrorResponses:
+            - ErrorCachingMinTTL: 0
+              ErrorCode: 403
+              ResponseCode: 200
+              ResponsePagePath: /
     StaticCloudFrontOriginAccessIdentity:
       Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
       Properties:
