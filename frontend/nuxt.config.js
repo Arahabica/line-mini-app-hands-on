@@ -35,15 +35,13 @@ if (process.env.NODE_ENV === "development") {
   }
   //script.push({ src: '/vconsole.min.js' })
 }
-console.log(process.env.LIFF_ID)
 module.exports = {
   ssr: false,
   srcDir: SRC_DIR,
   components: true,
   env: {
     NODE_ENV: process.env.NODE_ENV,
-    LIFF_ID: process.env.LIFF_ID,
-    ENDPOINT: process.env.ENDPOINT,
+    LIFF_ID: process.env.LIFF_ID
   },
   /*
   ** Headers of the page

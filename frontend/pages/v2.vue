@@ -20,9 +20,7 @@ import liff  from "@line/liff"
 import axiosBase from "axios"
 
 const LIFF_ID = process.env.LIFF_ID
-const ENDPOINT = process.env.ENDPOINT
 
-console.log(JSON.stringify({ ENDPOINT }))
 const axios = axiosBase.create({
   baseURL: ENDPOINT,
   headers: {

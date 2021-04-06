@@ -6,7 +6,8 @@
   "license": "MIT",
   "main": "handler.js",
   "scripts": {
-    "deploy": "yarn front:build && serverless deploy",
+    "logs": "sls logs -f backend",
+    "deploy": "yarn front:build && sls deploy -v",
     "front:build": "cd frontend && yarn build && cd ..",
     "print": "sls print --format yaml --path custom.app",
     "test": "echo \"Error: no test specified\" && exit 1"
