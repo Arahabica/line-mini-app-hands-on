@@ -16,6 +16,17 @@ import CameraWatcher from '~/components/admin/scanner/CameraWatcher'
 import KeyboardWatcher from '~/components/admin/scanner/KeyboardWatcher'
 import { SCAN_STATUS } from '~/lib/constants'
 import { Howl } from 'howler'
+import axiosBase from "axios"
+
+const axios = axiosBase.create({
+  baseURL: '/api/v1',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest'
+  },
+  responseType: 'json'
+})
+
 
 const DISPLAY_TIME = 1500
 
@@ -55,10 +66,8 @@ export default {
       }
     },
     async checkQR(qrCode) {
-      // TODO: implement
-      return SCAN_STATUS.OK
-      //const result = await callable({ name: 'scanUserCode', params: { userId }})
-      //return result.data
+      const res = await axios.post('/qrCode', { qrCode })
+      return res.data.status
     }
   }
 }

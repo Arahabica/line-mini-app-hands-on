@@ -5,7 +5,7 @@
       indeterminate
       color="primary"
       :size="120"
-  ></v-progress-circular>
+    ></v-progress-circular>
     <div v-if="isLoggedIn">
       <v-avatar v-if="profile.pictureUrl" :size="120">
         <v-img :src="profile.pictureUrl" :alt="profile.displayName"/>
@@ -20,9 +20,8 @@ import liff  from "@line/liff"
 import axiosBase from "axios"
 
 const LIFF_ID = process.env.LIFF_ID
-
 const axios = axiosBase.create({
-  baseURL: ENDPOINT,
+  baseURL: '/api/v1',
   headers: {
     'Content-Type': 'application/json',
     'X-Requested-With': 'XMLHttpRequest'
@@ -49,14 +48,12 @@ export default {
       await liff.login()
       return
     }
-    // const accessToken = liff.getAccessToken()
-    this.profile = await liff.getProfile()
+    const accessToken = liff.getAccessToken()
+    const profile = await liff.getProfile()
+    console.log({accessToken, profile})
+    this.profile = profile
     this.isLoggedIn = true
-    const res = axios.get('/')
-    // const res = axios.put('/v1/user')
-    // const res = await API.put("lineMemberApi", "/v1/user", {})
-    // const res = await API.get("lineMemberApi", "/visit", {})
-    console.log(res)
+    const res = await axios.put('/user', { accessToken })
   },
 }
 </script>

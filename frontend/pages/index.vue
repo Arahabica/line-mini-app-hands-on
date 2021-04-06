@@ -5,7 +5,7 @@
       indeterminate
       color="primary"
       :size="120"
-  ></v-progress-circular>
+    ></v-progress-circular>
     <div v-if="isLoggedIn">
       <v-avatar v-if="profile.pictureUrl" :size="120">
         <v-img :src="profile.pictureUrl" :alt="profile.displayName"/>
@@ -49,11 +49,11 @@ export default {
       return
     }
     const accessToken = liff.getAccessToken()
-    this.profile = await liff.getProfile()
+    const profile = await liff.getProfile()
+    console.log({accessToken, profile})
+    this.profile = profile
     this.isLoggedIn = true
-    console.log(accessToken)
-    const res = await axios.put('/user', { accessToken })
-    console.log(res)
+    await axios.put('/user', { accessToken })
   },
 }
 </script>
