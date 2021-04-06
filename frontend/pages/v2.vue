@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import liff  from "@line/liff"
+import liff from "@line/liff"
 import axiosBase from "axios"
 
 const LIFF_ID = process.env.LIFF_ID
