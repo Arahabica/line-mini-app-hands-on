@@ -9,7 +9,7 @@ custom:
     LINE_CHANNEL_ID: ${ssm:/${self:custom.stage}/${self:service}/LINE_CHANNEL_ID}
     LIFF_ID: ${ssm:/${self:custom.stage}/${self:service}/LIFF_ID}
     USER_TABLE: ${self:custom.stack}-user
-    VISIT_TABLE: ${self:custom.stage}-visit
+    VISIT_TABLE: ${self:custom.stack}-visit
   region: ${opt:region, self:provider.region}
   stage: ${opt:stage, self:provider.stage}
   stack: ${self:service}-${self:custom.stage}
@@ -153,15 +153,12 @@ resources:
             Ref: AWS::StackName
     UserTable:
       Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          -
-            AttributeName: id
+          - AttributeName: id
             AttributeType: S
         KeySchema:
-          -
-            AttributeName: id
+          - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
@@ -169,16 +166,17 @@ resources:
         TableName: ${self:custom.app.USER_TABLE}
     VisitTable:
       Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          -
-            AttributeName: id
+          - AttributeName: userId
             AttributeType: S
+          - AttributeName: visitedAt
+            AttributeType: N
         KeySchema:
-          -
-            AttributeName: id
+          - AttributeName: userId
             KeyType: HASH
+          - AttributeName: visitedAt
+            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1

@@ -51,14 +51,13 @@ const getProfile = async (accessToken) => {
   return response.data
 }
 
-const getUser = (userId) => {
+const getUser = async (userId) => {
   const params = {
     TableName: TableName.User,
-    Key: {
-      'userId': {S: userId}
-    }
+    Key: { id: userId }
   }
-  return dynamodb.getItem(params).promise()
+  const res = await dynamodb.get(params).promise()
+  return res.Item
 }
 
 const putUser = async (data) => {
@@ -71,7 +70,6 @@ const putUser = async (data) => {
       updatedAt: data.updatedAt
     }
   };
-  console.log({ data, params })
   return await dynamodb.put(params).promise();
 }
 
@@ -100,10 +98,8 @@ app.put('/v1/user', async function(req, res) {
   try {
     const { accessToken } = req.body
     const now = new Date().getTime()
-    console.log({ accessToken })
     // LINEのアクセストークンが正しいか検証
     await verifyToken(accessToken)
-    console.log('verified')
     // アクセストークンを利用してプロフィール取得
     const profile = await getProfile(accessToken)
     const data = await putUser({
@@ -123,18 +119,18 @@ app.put('/v1/user', async function(req, res) {
  * HTTP post method for insert object *
  *************************************/
 
-app.post('/v1/visit', async function(req, res) {
+app.post('/v1/qrCode', async function(req, res) {
   try {
-    const userId = req.body.userId
+    const { qrCode } = req.body
+    const userId = qrCode
     const visitedAt = new Date().getTime()
     const user = await getUser(userId)
     const data = await putVisit( {
-      userId: user.userId,
+      userId: user.id,
       visitedAt: visitedAt,
       displayName: user.displayName,
       pictureUrl: user.pictureUrl,
     });
-    console.log(data);
     res.json({success: 'succeed!', url: req.url, data: data});
   } catch (err) {
     console.error(err)
@@ -146,7 +142,6 @@ app.post('/v1/visit', async function(req, res) {
 app.get('/v1/visit', async function(req, res) {
   try {
     const data = await getVisitList();
-    console.log(data);
     res.json({success: 'succeed!', url: req.url, data: data});
   } catch (err) {
     console.error(err)

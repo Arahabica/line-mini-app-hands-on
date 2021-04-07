@@ -29,6 +29,7 @@
 
 <script>
 import liff from "@line/liff"
+import axiosBase from "axios"
 import VueQrcode from '@chenfengyuan/vue-qrcode'
 
 const LIFF_ID = process.env.LIFF_ID
