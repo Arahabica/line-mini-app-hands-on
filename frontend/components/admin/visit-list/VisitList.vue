@@ -6,6 +6,16 @@
 </template>
 <script>
 import VisitListPresent from '~/components/admin/visit-list/VisitListPresent'
+import axiosBase from "axios"
+
+const axios = axiosBase.create({
+  baseURL: '/api/v1',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest'
+  },
+  responseType: 'json'
+})
 
 export default {
   components: { VisitListPresent },
@@ -19,8 +29,9 @@ export default {
     this.fetchVisits()
   },
   methods: {
-    fetchVisits() {
-      console.log('fetchVisits')
+    async fetchVisits() {
+      const res = await axios.get('/visit')
+      this.visits = res.data.data
     }
   }
 }
