@@ -1,5 +1,5 @@
 <template>
-  <section class="container">
+  <section class="app-wrapper">
     <div>
       <app-logo/>
       <h1 class="title">
@@ -33,7 +33,7 @@ export default {
 </script>
 
 <style scoped>
-.container {
+.app-wrapper {
   min-height: 100vh;
   display: flex;
   justify-content: center;

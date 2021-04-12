@@ -1,5 +1,5 @@
 <template>
-  <section class="container">
+  <section class="app-wrapper">
     <v-progress-circular
       v-if="!isLoggedIn"
       indeterminate
@@ -87,7 +87,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.container {
+.app-wrapper {
   height: 100vh;
   display: flex;
   justify-content: center;

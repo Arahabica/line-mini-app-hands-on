@@ -1,5 +1,5 @@
 <template>
-  <section class="container">
+  <section class="app-wrapper">
     <v-progress-circular
       v-if="!isLoggedIn"
       indeterminate
@@ -23,19 +23,32 @@
           </div>
         </div>
         <div class="limit-app-wrapper">
-        <div class="limit-app">
-          <v-progress-circular
-            class="limit-circle"
-            color="#2ecc71"
-            :size="120"
-            :rotate="-90"
-            :width="8"
-            :value="progress"
-          ></v-progress-circular>
-          <div class="limit-number-wrapper">
-            <div class="limit-number">{{timeLimitStr}}</div>
+          <div v-if="timeLimit > 0" class="limit-app">
+            <v-progress-circular
+              class="limit-circle"
+              color="#2ecc71"
+              :size="120"
+              :rotate="-90"
+              :width="8"
+              :value="progress"
+            ></v-progress-circular>
+            <div class="limit-number-wrapper">
+              <div class="limit-number">{{timeLimitStr}}</div>
+            </div>
           </div>
-        </div>
+          <div v-if="timeLimit <= 0" class="limit-app">
+            <v-btn
+              fab
+              dark
+              large
+              :width="120"
+              :height="120"
+              color="primary"
+              @click="reload"
+            >
+              <span class="circle-btn-text">再読み込み</span>
+            </v-btn>
+          </div>
         </div>
       </v-card>
     </div>
@@ -47,26 +60,13 @@ import liff from "@line/liff"
 import VueQrcode from '@chenfengyuan/vue-qrcode'
 
 const LIFF_ID = process.env.LIFF_ID
-const MAX_TIME_LIMIT = 15
-const qrOption = {
-  errorCorrectionLevel: "H",
-  maskPattern: 0,
-  margin: 2,
-  scale: 2,
-  width: 240,
-  color: {
-    dark: '#222222',
-    light: "#ffffff"
-  }
-}
-
+const MAX_TIME_LIMIT = 20
 export default {
   components: {VueQrcode},
   data() {
     return {
       isLoggedIn: false,
       profile: null,
-      qrOption,
       timeLimit: MAX_TIME_LIMIT,
       token: null,
       intervalId: null
@@ -78,6 +78,20 @@ export default {
     },
     timeLimitStr() {
       return Math.floor(this.timeLimit)
+    },
+    qrOption() {
+      return {
+        errorCorrectionLevel: "H",
+        maskPattern: 0,
+        margin: 2,
+        scale: 2,
+        width: 240,
+        color: {
+          dark: this.timeLimit > 0 ? '#222222' : '#dadada',
+          light: "#ffffff"
+        }
+      }
+
     }
   },
   async mounted() {
@@ -95,16 +109,10 @@ export default {
     // const accessToken = liff.getAccessToken()
     this.profile = await liff.getProfile()
     this.isLoggedIn = true
-    const createToken = () => {
-      return String(Math.floor(Math.random() * 10000000)) + String(Math.floor(Math.random() * 10000000)) + String(Math.floor(Math.random() * 10000000))
-    }
-    this.token = createToken()
+    this.token = this.fetchToken()
     this.intervalId = setInterval(() => {
       if (this.timeLimit > 0) {
         this.timeLimit -= 1
-      } else {
-        this.timeLimit = MAX_TIME_LIMIT
-        this.token = createToken()
       }
     }, 1000)
   },
@@ -113,11 +121,20 @@ export default {
       clearInterval(this.intervalId)
     }
   },
+  methods: {
+    fetchToken() {
+      return String(Math.floor(Math.random() * 10000000)) + String(Math.floor(Math.random() * 10000000)) + String(Math.floor(Math.random() * 10000000))
+    },
+    reload() {
+      this.timeLimit = MAX_TIME_LIMIT
+      this.token = this.fetchToken()
+    }
+  }
 }
 </script>
 
 <style scoped lang="scss">
-.container {
+.app-wrapper {
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -205,6 +222,9 @@ h2 {
         font-size: 28px;
         color: #2ecc71;
       }
+    }
+    .circle-btn-text {
+      font-weight: bold;
     }
   }
 }

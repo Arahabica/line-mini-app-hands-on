@@ -72,6 +72,7 @@ module.exports = {
       icons: false,
       font: false
     },
+    customVariables: ['~/assets/sass/variables.sass'],
     icons: {
       iconfont: 'mdiSvg',
       values: {
