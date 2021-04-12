@@ -57,10 +57,21 @@
 
 <script>
 import liff from "@line/liff"
+import axiosBase from "axios"
 import VueQrcode from '@chenfengyuan/vue-qrcode'
 
 const LIFF_ID = process.env.LIFF_ID
 const MAX_TIME_LIMIT = 20
+
+const axios = axiosBase.create({
+  baseURL: '/api/v2',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest'
+  },
+  responseType: 'json'
+});
+
 export default {
   components: {VueQrcode},
   data() {
@@ -106,10 +117,10 @@ export default {
       await liff.login()
       return
     }
-    // const accessToken = liff.getAccessToken()
+    this.accessToken = liff.getAccessToken()
     this.profile = await liff.getProfile()
     this.isLoggedIn = true
-    this.token = this.fetchToken()
+    this.token = await this.fetchToken()
     this.intervalId = setInterval(() => {
       if (this.timeLimit > 0) {
         this.timeLimit -= 1
@@ -122,12 +133,14 @@ export default {
     }
   },
   methods: {
-    fetchToken() {
-      return String(Math.floor(Math.random() * 10000000)) + String(Math.floor(Math.random() * 10000000)) + String(Math.floor(Math.random() * 10000000))
+    async fetchToken() {
+      const { accessToken } = this
+      const res = await axios.post('/token', { accessToken })
+      return res.data.data.token
     },
-    reload() {
+    async reload() {
       this.timeLimit = MAX_TIME_LIMIT
-      this.token = this.fetchToken()
+      this.token = await this.fetchToken()
     }
   }
 }
@@ -158,7 +171,7 @@ h2 {
 
   .member-card {
     margin: 20px 20px 0 20px;
-    padding: 12px 0 48px;
+    padding: 12px 0 12px 0;
   }
 }
 
@@ -201,8 +214,8 @@ h2 {
   justify-content: center;
   .limit-app {
     position: relative;
-    width: 180px;
-    height: 180px;
+    width: 160px;
+    height: 160px;
     display: flex;
     justify-content: center;
     align-items: center;

@@ -10,6 +10,7 @@ custom:
     LIFF_ID: ${ssm:/${self:custom.stage}/${self:service}/LIFF_ID}
     USER_TABLE: ${self:custom.stack}-user
     VISIT_TABLE: ${self:custom.stack}-visit
+    TOKEN_TABLE: ${self:custom.stack}-token
   region: ${opt:region, self:provider.region}
   stage: ${opt:stage, self:provider.stage}
   stack: ${self:service}-${self:custom.stage}
@@ -30,6 +31,7 @@ provider:
     LINE_CHANNEL_ID: ${self:custom.app.LINE_CHANNEL_ID}
     USER_TABLE: ${self:custom.app.USER_TABLE}
     VISIT_TABLE: ${self:custom.app.VISIT_TABLE}
+    TOKEN_TABLE: ${self:custom.app.TOKEN_TABLE}
     TZ: Asia/Tokyo
   deploymentBucket:
     name: ${self:custom.app.DEPLOYMENT_BUCKET}
@@ -46,10 +48,7 @@ provider:
       Resource:
         - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:custom.app.USER_TABLE}"
         - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:custom.app.VISIT_TABLE}"
-    #- Effect: Allow
-    #  Action:
-    #    - 's3:*'
-    #  Resource: 'arn:aws:s3:::${self:custom.app.PUBLIC_BUCKET}/*'
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:custom.app.TOKEN_TABLE}"
 package:
   exclude:
     - backend/node_modules/**
@@ -137,6 +136,10 @@ resources:
               CachedMethods:
                 - HEAD
                 - GET
+              Compress: true
+              DefaultTTL: 0
+              MaxTTL: 0
+              MinTTL: 0
               ForwardedValues:
                 QueryString: true
               ViewerProtocolPolicy: https-only
@@ -181,6 +184,19 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:custom.app.VISIT_TABLE}
+    TokenTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: token
+            AttributeType: S
+        KeySchema:
+          - AttributeName: token
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.app.TOKEN_TABLE}
   Outputs:
     StaticContentsCloudFrontUrl:
       Value:

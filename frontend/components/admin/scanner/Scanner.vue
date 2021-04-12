@@ -19,7 +19,7 @@ import { Howl } from 'howler'
 import axiosBase from "axios"
 
 const axios = axiosBase.create({
-  baseURL: '/api/v1',
+  baseURL: '/api/v2',
   headers: {
     'Content-Type': 'application/json',
     'X-Requested-With': 'XMLHttpRequest'
@@ -66,8 +66,13 @@ export default {
       }
     },
     async checkQR(qrCode) {
-      const res = await axios.post('/qrCode', { qrCode })
-      return res.data.status
+      try {
+        await axios.post('/qrCode', {qrCode})
+        return SCAN_STATUS.OK
+      } catch (e) {
+        console.error(e)
+        return SCAN_STATUS.NG
+      }
     }
   }
 }
