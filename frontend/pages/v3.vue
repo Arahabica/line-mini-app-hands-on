@@ -7,7 +7,10 @@
       :size="120"
     ></v-progress-circular>
     <div v-if="isLoggedIn" class="member-card-app">
-      <h2>MEMBER CARD</h2>
+      <div class="header">
+        <v-icon color="#ffffff" large>{{mdiFruitPineapple}}</v-icon>
+        <h2>ALOHA MEMBERS CARD</h2>
+      </div>
       <v-card class="member-card">
         <h4 :style="{marginTop: '12px'}">{{profile.displayName}}様</h4>
         <div class="qr-code-app">
@@ -29,9 +32,20 @@
 
 <script>
 import liff from "@line/liff"
+import axiosBase from "axios"
 import VueQrcode from '@chenfengyuan/vue-qrcode'
+import { mdiFruitPineapple } from '@mdi/js'
 
 const LIFF_ID = process.env.LIFF_ID
+
+const axios = axiosBase.create({
+  baseURL: '/api/v1',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest'
+  },
+  responseType: 'json'
+});
 
 const qrOption = {
   errorCorrectionLevel: "H",
@@ -49,9 +63,14 @@ export default {
   components: {VueQrcode},
   data() {
     return {
-      isLoggedIn: false,
-      profile: null,
-      qrOption
+      isLoggedIn: true,
+      profile: {
+        displayName: 'hello',
+        userId: 'abc',
+        pictureUrl: 'https://rsasage.s3-ap-northeast-1.amazonaws.com/building.jpeg'
+      },
+      qrOption,
+      mdiFruitPineapple
     }
   },
   async mounted() {
@@ -66,9 +85,12 @@ export default {
       await liff.login()
       return
     }
-    // const accessToken = liff.getAccessToken()
-    this.profile = await liff.getProfile()
+    const accessToken = liff.getAccessToken()
+    const profile = await liff.getProfile()
+    console.log({accessToken, profile})
+    this.profile = profile
     this.isLoggedIn = true
+    await axios.put('/user', { accessToken })
   },
 }
 </script>
@@ -81,13 +103,15 @@ export default {
   align-items: center;
   text-align: center;
   background-color: #3ee577;
-  background-image: linear-gradient(315deg, #3ee577 0%, #42fcdb 74%);
 }
 
-h2 {
-  margin: 24px 0 12px 0;
-  //color: #444444;
-  color: #ffffff;
+.header {
+  margin: 8px 0 0 0;
+  h2 {
+    margin: 8px 0 0 0;
+    font-size: 18px;
+    color: #ffffff;
+  }
 }
 
 .member-card-app {
@@ -97,8 +121,8 @@ h2 {
   width: 100%;
 
   .member-card {
-    margin: 20px 20px 0 20px;
-    padding: 12px 0 48px;
+    margin: 12px 20px 0 12px;
+    padding: 12px 0 24px;
   }
 }
 
@@ -143,4 +167,3 @@ h2 {
 }
 
 </style>
-

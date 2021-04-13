@@ -4,7 +4,7 @@
       <div>
         <v-icon @click="moveTop">{{mdiFruitPineapple}}</v-icon>
       </div>
-      <v-toolbar-title class="ml-2">Awesome Shop</v-toolbar-title>
+      <v-toolbar-title class="ml-2">アロハカフェ</v-toolbar-title>
       <v-spacer/>
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">

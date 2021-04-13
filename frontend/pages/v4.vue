@@ -7,7 +7,10 @@
       :size="120"
     ></v-progress-circular>
     <div v-if="isLoggedIn" class="member-card-app">
-      <h2>MEMBER CARD</h2>
+      <div class="header">
+        <v-icon color="#ffffff" large>{{mdiFruitPineapple}}</v-icon>
+        <h2>ALOHA MEMBERS CARD</h2>
+      </div>
       <v-card class="member-card">
         <h4 :style="{marginTop: '12px'}">{{profile.displayName}}様</h4>
         <div class="qr-code-app" v-if="token">
@@ -59,6 +62,7 @@
 import liff from "@line/liff"
 import axiosBase from "axios"
 import VueQrcode from '@chenfengyuan/vue-qrcode'
+import { mdiFruitPineapple } from '@mdi/js'
 
 const LIFF_ID = process.env.LIFF_ID
 const MAX_TIME_LIMIT = 20
@@ -80,7 +84,8 @@ export default {
       profile: null,
       timeLimit: MAX_TIME_LIMIT,
       token: null,
-      intervalId: null
+      intervalId: null,
+      mdiFruitPineapple
     }
   },
   computed: {
@@ -154,13 +159,15 @@ export default {
   align-items: center;
   text-align: center;
   background-color: #3ee577;
-  background-image: linear-gradient(315deg, #3ee577 0%, #42fcdb 74%);
 }
 
-h2 {
-  margin: 24px 0 12px 0;
-  //color: #444444;
-  color: #ffffff;
+.header {
+  margin: 8px 0 0 0;
+  h2 {
+    margin: 8px 0 0 0;
+    font-size: 18px;
+    color: #ffffff;
+  }
 }
 
 .member-card-app {

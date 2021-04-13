@@ -18,6 +18,7 @@
 <script>
 import liff from "@line/liff"
 import axiosBase from "axios"
+import { mdiFruitPineapple } from '@mdi/js'
 
 const LIFF_ID = process.env.LIFF_ID
 const axios = axiosBase.create({
@@ -33,7 +34,8 @@ export default {
   data() {
     return {
       isLoggedIn: false,
-      profile: null
+      profile: null,
+      mdiFruitPineapple
     }
   },
   async mounted() {
@@ -66,28 +68,6 @@ export default {
   align-items: center;
   text-align: center;
   background-color: #3ee577;
-  background-image: linear-gradient(315deg, #3ee577 0%, #42fcdb 74%);
-}
-
-.title {
-  font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* 1 */
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
 }
 </style>
 

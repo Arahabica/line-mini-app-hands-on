@@ -1,159 +1,64 @@
 <template>
   <section class="app-wrapper">
-    <v-progress-circular
-      v-if="!isLoggedIn"
-      indeterminate
-      color="primary"
-      :size="120"
-    ></v-progress-circular>
-    <div v-if="isLoggedIn" class="member-card-app">
-      <h2>MEMBER CARD</h2>
-      <v-card class="member-card">
-        <h4 :style="{marginTop: '12px'}">{{profile.displayName}}様</h4>
-        <div class="qr-code-app">
-          <div class="qr-code-wrapper">
-            <vue-qrcode :value="profile.userId" :options="qrOption" tag="img" class="qr-code"/>
-            <div class="app-icon-wrapper">
-              <div class="white-circle">
-                <v-avatar v-if="profile.pictureUrl" :size="54" class="avatar">
-                  <v-img :src="profile.pictureUrl" :alt="profile.displayName"/>
-                </v-avatar>
-              </div>
-            </div>
-          </div>
-        </div>
-      </v-card>
+    <div>
+      <app-logo/>
+      <h1 class="title">
+        line-member
+      </h1>
+      <h2 class="subtitle">
+        Nuxt.js project
+      </h2>
+      <div class="links">
+        <a
+          href="https://nuxtjs.org/"
+          target="_blank"
+          class="button--green">Documentation</a>
+        <a
+          href="https://github.com/nuxt/nuxt.js"
+          target="_blank"
+          class="button--grey">GitHub</a>
+      </div>
     </div>
   </section>
 </template>
 
 <script>
-import liff from "@line/liff"
-import axiosBase from "axios"
-import VueQrcode from '@chenfengyuan/vue-qrcode'
-
-const LIFF_ID = process.env.LIFF_ID
-
-const axios = axiosBase.create({
-  baseURL: '/api/v1',
-  headers: {
-    'Content-Type': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest'
-  },
-  responseType: 'json'
-});
-
-const qrOption = {
-  errorCorrectionLevel: "H",
-  maskPattern: 0,
-  margin: 2,
-  scale: 2,
-  width: 240,
-  color: {
-    dark: '#222222',
-    light: "#ffffff"
-  }
-}
+import AppLogo from '~/components/AppLogo.vue'
 
 export default {
-  components: {VueQrcode},
-  data() {
-    return {
-      isLoggedIn: false,
-      profile: null,
-      qrOption
-    }
-  },
-  async mounted() {
-    // 1. LIFFの初期化
-    await liff.init({liffId: LIFF_ID})
-      .catch((err) => {
-        console.error(err)
-        window.alert('LIFFの初期化失敗。\n' + err)
-      })
-    // 2. LINEに未認証の場合、ログイン画面にリダイレクト
-    if (!liff.isLoggedIn()) {
-      await liff.login()
-      return
-    }
-    const accessToken = liff.getAccessToken()
-    const profile = await liff.getProfile()
-    console.log({accessToken, profile})
-    this.profile = profile
-    this.isLoggedIn = true
-    await axios.put('/user', { accessToken })
-  },
+  components: {
+    AppLogo
+  }
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .app-wrapper {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  background-color: #3ee577;
-  background-image: linear-gradient(315deg, #3ee577 0%, #42fcdb 74%);
 }
 
-h2 {
-  margin: 24px 0 12px 0;
-  //color: #444444;
-  color: #ffffff;
+.title {
+  font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* 1 */
+  display: block;
+  font-weight: 300;
+  font-size: 100px;
+  color: #35495e;
+  letter-spacing: 1px;
 }
 
-.member-card-app {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-
-  .member-card {
-    margin: 20px 20px 0 20px;
-    padding: 12px 0 48px;
-  }
+.subtitle {
+  font-weight: 300;
+  font-size: 42px;
+  color: #526488;
+  word-spacing: 5px;
+  padding-bottom: 15px;
 }
 
-.qr-code-app {
-  display: flex;
-  justify-content: center;
-
-  .qr-code-wrapper {
-    position: relative;
-
-    .qr-code {
-      max-width: 240px;
-      width: 100%;
-    }
-
-    .app-icon-wrapper {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      .white-circle {
-        width: 60px;
-        height: 60px;
-        border-radius: 30px;
-        background-color: #ffffff;
-
-        .avatar {
-          margin: 3px;
-        }
-      }
-
-      .app-icon {
-        max-width: 54px
-      }
-    }
-  }
+.links {
+  padding-top: 15px;
 }
-
 </style>
-

@@ -23,15 +23,9 @@ let isAnalyze = false
 const script = []
 if (process.env.NODE_ENV === "development") {
   isAnalyze = true
-  // 開発時のみHTTPS 接続設定を構成する
   serverConfig = {
     port: 3000,
-    host: "localhost",
-    https: {
-      // 作成した証明書ファイルを読み込む
-      key: fs.readFileSync(path.resolve(__dirname, "keys", "localhost-key.pem")),
-      cert: fs.readFileSync(path.resolve(__dirname, "keys", "localhost.pem"))
-    }
+    host: "localhost"
   }
   //script.push({ src: '/vconsole.min.js' })
 }
