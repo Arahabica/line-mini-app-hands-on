@@ -24,7 +24,7 @@ const script = []
 if (process.env.NODE_ENV === "development") {
   isAnalyze = true
   serverConfig = {
-    port: 3000,
+    port: 8080,
     host: "localhost"
   }
   //script.push({ src: '/vconsole.min.js' })
