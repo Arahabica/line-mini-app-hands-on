@@ -12,7 +12,7 @@
         <h2>ALOHA MEMBERS CARD</h2>
       </div>
       <v-card class="member-card">
-        <h4 :style="{marginTop: '12px'}">{{profile.displayName}}様</h4>
+        <h4 class="mt-3">{{profile.displayName}}様</h4>
         <div class="qr-code-app">
           <div class="qr-code-wrapper">
             <vue-qrcode :value="profile.userId" :options="qrOption" tag="img" class="qr-code"/>
@@ -29,7 +29,6 @@
     </div>
   </section>
 </template>
-
 <script>
 import liff from "@line/liff"
 import axiosBase from "axios"
@@ -45,8 +44,7 @@ const axios = axiosBase.create({
     'X-Requested-With': 'XMLHttpRequest'
   },
   responseType: 'json'
-});
-
+})
 const qrOption = {
   errorCorrectionLevel: "H",
   maskPattern: 0,
@@ -58,17 +56,12 @@ const qrOption = {
     light: "#ffffff"
   }
 }
-
 export default {
   components: {VueQrcode},
   data() {
     return {
       isLoggedIn: true,
-      profile: {
-        displayName: 'hello',
-        userId: 'abc',
-        pictureUrl: 'https://rsasage.s3-ap-northeast-1.amazonaws.com/building.jpeg'
-      },
+      profile: null,
       qrOption,
       mdiFruitPineapple
     }
@@ -94,7 +87,6 @@ export default {
   },
 }
 </script>
-
 <style scoped lang="scss">
 .app-wrapper {
   height: 100vh;
@@ -104,7 +96,6 @@ export default {
   text-align: center;
   background-color: #3ee577;
 }
-
 .header {
   margin: 8px 0 0 0;
   h2 {
@@ -113,7 +104,6 @@ export default {
     color: #ffffff;
   }
 }
-
 .member-card-app {
   display: flex;
   flex-direction: column;
@@ -125,19 +115,15 @@ export default {
     padding: 12px 0 24px;
   }
 }
-
 .qr-code-app {
   display: flex;
   justify-content: center;
-
   .qr-code-wrapper {
     position: relative;
-
     .qr-code {
       max-width: 240px;
       width: 100%;
     }
-
     .app-icon-wrapper {
       position: absolute;
       top: 0;
@@ -147,23 +133,19 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
-
       .white-circle {
         width: 60px;
         height: 60px;
         border-radius: 30px;
         background-color: #ffffff;
-
         .avatar {
           margin: 3px;
         }
       }
-
       .app-icon {
         max-width: 54px
       }
     }
   }
 }
-
 </style>
