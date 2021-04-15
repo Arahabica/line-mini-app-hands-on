@@ -3,7 +3,24 @@
     <nuxt/>
   </v-app>
 </template>
-
+<script>
+window.onload = function(){
+  initVConsole();
+}
+// Initialize vConsole
+function initVConsole() {
+  window.vConsole = new window.VConsole({
+    defaultPlugins: ['system', 'network', 'element', 'storage'],
+    maxLogNumber: 1000,
+    onReady: function() {
+      console.log('vConsole is ready.');
+    },
+    onClearLog: function() {
+      console.log('on clearLog');
+    }
+  });
+}
+</script>
 <style>
 html {
   font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;

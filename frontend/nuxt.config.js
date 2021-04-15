@@ -10,11 +10,6 @@ import {
 } from '@mdi/js'
 
 const SRC_DIR = '.'
-const COMPONENTS_DIR = 'components'
-
-const srcPath = path.resolve(__dirname, SRC_DIR)
-const componentDirs = fs.readdirSync(path.join(srcPath, COMPONENTS_DIR))
-const foundComponents = {}
 
 const title = 'LINEで会員証'
 
@@ -27,8 +22,8 @@ if (process.env.NODE_ENV === "development") {
     port: 8080,
     host: "localhost"
   }
-  //script.push({ src: '/vconsole.min.js' })
 }
+script.push({ src: '/vconsole.min.js' })
 module.exports = {
   ssr: false,
   srcDir: SRC_DIR,
