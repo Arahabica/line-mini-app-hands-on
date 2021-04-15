@@ -60,7 +60,7 @@ export default {
   components: {VueQrcode},
   data() {
     return {
-      isLoggedIn: true,
+      isLoggedIn: false,
       profile: null,
       qrOption,
       mdiFruitPineapple
