@@ -30,7 +30,7 @@
   </section>
 </template>
 <script>
-import liff from "@line/liff"
+//import liff from "@line/liff" // CDNからの読み込みに修正
 import axiosBase from "axios"
 import VueQrcode from '@chenfengyuan/vue-qrcode'
 import { mdiFruitPineapple } from '@mdi/js'
