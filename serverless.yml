@@ -10,7 +10,6 @@ custom:
     LIFF_ID: ${ssm:/${self:custom.stage}/${self:service}/LIFF_ID}
     USER_TABLE: ${self:custom.stack}-user
     VISIT_TABLE: ${self:custom.stack}-visit
-    TOKEN_TABLE: ${self:custom.stack}-token
   region: ${opt:region, self:provider.region}
   stage: ${opt:stage, self:provider.stage}
   stack: ${self:service}-${self:custom.stage}
@@ -31,7 +30,6 @@ provider:
     LINE_CHANNEL_ID: ${self:custom.app.LINE_CHANNEL_ID}
     USER_TABLE: ${self:custom.app.USER_TABLE}
     VISIT_TABLE: ${self:custom.app.VISIT_TABLE}
-    TOKEN_TABLE: ${self:custom.app.TOKEN_TABLE}
     TZ: Asia/Tokyo
   deploymentBucket:
     name: ${self:custom.app.DEPLOYMENT_BUCKET}
@@ -48,7 +46,6 @@ provider:
       Resource:
         - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:custom.app.USER_TABLE}"
         - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:custom.app.VISIT_TABLE}"
-        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:custom.app.TOKEN_TABLE}"
 package:
   exclude:
     - backend/node_modules/**
