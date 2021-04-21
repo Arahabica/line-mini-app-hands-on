@@ -68,7 +68,7 @@ const LIFF_ID = process.env.LIFF_ID
 const MAX_TIME_LIMIT = 20
 
 const axios = axiosBase.create({
-  baseURL: '/api/v2',
+  baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
     'X-Requested-With': 'XMLHttpRequest'

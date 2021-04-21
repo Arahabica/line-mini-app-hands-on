@@ -22,7 +22,7 @@ import { mdiFruitPineapple } from '@mdi/js'
 
 const LIFF_ID = process.env.LIFF_ID
 const axios = axiosBase.create({
-  baseURL: '/api/v1',
+  baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
     'X-Requested-With': 'XMLHttpRequest'

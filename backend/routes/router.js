@@ -94,7 +94,7 @@ const getVisitList = async () => {
   return data.Items;
 }
 
-app.put('/v1/user', async function(req, res) {
+app.put('/user', async function(req, res) {
   try {
     const { accessToken } = req.body
     const now = new Date().getTime()
@@ -119,7 +119,7 @@ app.put('/v1/user', async function(req, res) {
  * HTTP post method for insert object *
  *************************************/
 
-app.post('/v1/qrCode', async function(req, res) {
+app.post('/qrCode', async function(req, res) {
   try {
     const { qrCode } = req.body
     const userId = qrCode
@@ -139,7 +139,7 @@ app.post('/v1/qrCode', async function(req, res) {
   }
 });
 
-app.get('/v1/visit', async function(req, res) {
+app.get('/visit', async function(req, res) {
   try {
     const data = await getVisitList();
     res.json({success: 'succeed!', url: req.url, data: data});

@@ -19,7 +19,7 @@ import { Howl } from 'howler'
 import axiosBase from "axios"
 
 const axios = axiosBase.create({
-  baseURL: '/api/v1',
+  baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
     'X-Requested-With': 'XMLHttpRequest'

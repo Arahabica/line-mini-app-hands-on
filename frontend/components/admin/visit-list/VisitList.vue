@@ -9,7 +9,7 @@ import VisitListPresent from '~/components/admin/visit-list/VisitListPresent'
 import axiosBase from "axios"
 
 const axios = axiosBase.create({
-  baseURL: '/api/v1',
+  baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
     'X-Requested-With': 'XMLHttpRequest'
