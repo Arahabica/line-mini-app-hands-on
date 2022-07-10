@@ -24,7 +24,7 @@ plugins:
   - serverless-layers
 provider:
   name: aws
-  runtime: nodejs16.x
+  runtime: nodejs14.x
   region: ap-northeast-1
   environment:
     LINE_CHANNEL_ID: ${self:custom.app.LINE_CHANNEL_ID}
