@@ -24,7 +24,7 @@ plugins:
   - serverless-layers
 provider:
   name: aws
-  runtime: nodejs14.x
+  runtime: nodejs16.x
   region: ap-northeast-1
   stage: dev
   environment:
