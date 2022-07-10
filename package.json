@@ -7,7 +7,7 @@
   "main": "handler.js",
   "scripts": {
     "logs": "sls logs -f backend",
-    "deploy": "yarn back:build && yarn front:build && sls deploy -v",
+    "deploy": "yarn back:build && yarn front:build && sls deploy --verbose",
     "back:build": "cd backend && yarn build && cd ..",
     "front:build": "cd frontend && yarn build && cd ..",
     "print": "sls print --format yaml --path custom.app",
