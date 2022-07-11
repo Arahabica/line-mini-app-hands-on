@@ -19,36 +19,26 @@ const axiosInstance = axios.create({
   responseType: 'json'
 })
 
-// 渡されたLINEトークンが正しいものかを検証
-const verifyToken = async accessToken => {
-  const response = await axiosInstance.get('/oauth2/v2.1/verify', { params: { access_token: accessToken }} )
+// 渡されたLINE IDトークンが正しいものかを検証
+const verifyToken = async (userId, idToken) => {
+  const params = new URLSearchParams()
+  params.append('id_token', idToken)
+  params.append('user_id', userId)
+  params.append('client_id', LINE_CHANNEL_ID)
+  const response = await axiosInstance.post('/oauth2/v2.1/verify', params)
   if (response.status !== 200) {
     console.error(response.data.error_description)
     throw new Error(response.data.error)
-  }
-  // チャネルIDをチェック
-  if (response.data.client_id !== LINE_CHANNEL_ID) {
-    throw new Error('client_id does not match.')
   }
   //アクセストークンの有効期限
-  if (response.data.expires_in < 0) {
+  if (response.data.exp * 1000 < new Date().getTime()) {
     throw new Error('access token is expired.')
   }
-}
-
-const getProfile = async (accessToken) => {
-  const response = await axiosInstance.get('/v2/profile', {
-    headers: {
-      'Authorization': `Bearer ${accessToken}`
-    },
-    data: {}
-  })
-  if (response.status !== 200) {
-    console.error(response.data.error_description)
-    console.error(response.data.error)
-    throw new Error(response.data.error)
+  return {
+    userId: response.data.sub,
+    displayName: response.data.displayName || '', // 権限によっては取得できない
+    pictureUrl: response.data.pictureUrl || '' // 権限によっては取得できない
   }
-  return response.data
 }
 
 const getUser = async (userId) => {
@@ -96,19 +86,17 @@ const getVisitList = async () => {
 
 app.put('/user', async function(req, res) {
   try {
-    const { accessToken } = req.body
+    const { userId, idToken } = req.body
     const now = new Date().getTime()
-    // LINEのアクセストークンが正しいか検証
-    await verifyToken(accessToken)
-    // アクセストークンを利用してプロフィール取得
-    const profile = await getProfile(accessToken)
+    // LINEのIDストークンが正しいか検証
+    const profile = await verifyToken(userId, idToken)
     await putUser({
       userId: profile.userId,
       displayName: profile.displayName,
-      pictureUrl: profile.pictureUrl || '',
+      pictureUrl: profile.pictureUrl,
       updatedAt: now,
     })
-    res.json({success: 'succeed!', url: req.url, data: {} });
+    res.json({success: 'succeed!', url: req.url, data: {}});
   } catch (err) {
     console.error(err)
     res.statusCode = 500;

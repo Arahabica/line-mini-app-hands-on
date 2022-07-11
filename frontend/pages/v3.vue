@@ -12,12 +12,12 @@
         <h2>ALOHA MEMBERS CARD</h2>
       </div>
       <v-card class="member-card">
-        <h4 class="mt-3">{{profile.displayName}}様</h4>
+        <h4 v-if="profile" class="mt-3" >{{profile.displayName}}様</h4>
         <div class="qr-code-app">
           <div class="qr-code-wrapper">
-            <vue-qrcode :value="profile.userId" :options="qrOption" tag="img" class="qr-code"/>
-            <div class="app-icon-wrapper">
-              <div class="white-circle">
+            <vue-qrcode :value="userId" :options="qrOption" tag="img" class="qr-code"/>
+            <div v-if="profile" class="app-icon-wrapper">
+              <div class="white-circle" >
                 <v-avatar v-if="profile.pictureUrl" :size="54" class="avatar">
                   <v-img :src="profile.pictureUrl" :alt="profile.displayName"/>
                 </v-avatar>
@@ -30,7 +30,7 @@
   </section>
 </template>
 <script>
-//import liff from "@line/liff" // CDNからの読み込みに修正
+import liff from "@line/liff"
 import axiosBase from "axios"
 import VueQrcode from '@chenfengyuan/vue-qrcode'
 import { mdiFruitPineapple } from '@mdi/js'
@@ -61,6 +61,7 @@ export default {
   data() {
     return {
       isLoggedIn: false,
+      userId: null,
       profile: null,
       qrOption,
       mdiFruitPineapple
@@ -78,13 +79,34 @@ export default {
       await liff.login()
       return
     }
-    const accessToken = liff.getAccessToken()
-    const profile = await liff.getProfile()
-    console.log({accessToken, profile})
-    this.profile = profile
+    const { userId } = liff.getContext()
+    this.userId = userId
     this.isLoggedIn = true
-    await axios.put('/user', { accessToken })
+    let hasProfilePermission = await this.verifyProfilePermission()
+    if (!hasProfilePermission) {
+      await this.requestAllPermission()
+      hasProfilePermission = await this.verifyProfilePermission()
+    }
+    if (hasProfilePermission) {
+      this.profile = await liff.getProfile()
+    }
+    const idToken = liff.getIDToken()
+    await axios.put('/user', { userId, idToken })
+    this.isLoggedIn = true
   },
+  methods: {
+    async verifyProfilePermission() {
+      const permissionStatus = await liff.permission.query("profile")
+      return permissionStatus.state === "granted"
+    },
+    async requestAllPermission() {
+      try {
+        await liff.permission.requestAll()
+      } catch(e) {
+        console.error(e)
+      }
+    }
+  }
 }
 </script>
 <style scoped lang="scss">

@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === "development") {
   }
 }
 script.push({ src: '/vconsole.min.js' })
-script.push({ src: 'https://static.line-scdn.net/liff/edge/versions/2.9.0/sdk.js' })
+// script.push({ src: 'https://static.line-scdn.net/liff/edge/versions/2.20.3/sdk.js' })
 module.exports = {
   ssr: false,
   srcDir: SRC_DIR,
