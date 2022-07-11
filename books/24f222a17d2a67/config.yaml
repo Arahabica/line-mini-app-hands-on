@@ -6,5 +6,7 @@ topics: ["line", "lineミニアプリ", "liff"]
 published: false
 price: 0
 chapters:
-  - example1
-  - example2
+  - customer-journey
+  - preparation
+  - system
+  - init-liff
