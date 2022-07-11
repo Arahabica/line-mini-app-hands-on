@@ -1,6 +1,8 @@
-title: "hello zenn"
-summary: ""
-topics: []
+title: "AWSで会員証LINEミニアプリを作ろう！"
+summary: "LINEミニアプリへの関心が社会的にも高まりつつあります。
+
+今回のハンズオンでは、店舗など現実のシチュエーションを想定して、LINEミニアプリで会員証発行・入退場管理を行うアプリを作成します。具体的には、LINEミニアプリでQRコードを発行し、店舗側のQRコードリーダーでそれを読み込むシーンを想定しています。"
+topics: ["line", "lineミニアプリ", "liff"]
 published: false
 price: 0
 chapters:
