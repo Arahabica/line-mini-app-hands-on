@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@chenfengyuan/vue-qrcode": "^1.0.2",
+    "@line/liff": "^2.20.3",
     "@mdi/js": "^5.9.55",
     "@nuxtjs/vuetify": "^1.11.3",
     "axios": "^0.27.2",
