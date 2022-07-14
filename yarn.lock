@@ -705,11 +705,6 @@ zames@^2.0.0:
     currify "^3.0.0"
     es6-promisify "^6.0.0"
 
-zenn-cli@^0.1.114:
-  version "0.1.114"
-  resolved "https://registry.yarnpkg.com/zenn-cli/-/zenn-cli-0.1.114.tgz#e1d9102eceadf7c603a9f37f8a4c73dc5ef2bda2"
-  integrity sha512-8dpBVfywzxyqPo8jAhRECYsb9IZHgF3KzVnj6rGdZPPPaa/GwQThvIf6FjyEnXQaU6JKq7jjnpi+aSYs1hXEYQ==
-
 zip-stream@^2.1.2:
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/zip-stream/-/zip-stream-2.1.3.tgz#26cc4bdb93641a8590dd07112e1f77af1758865b"

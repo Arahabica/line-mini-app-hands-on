@@ -16,7 +16,6 @@
   "devDependencies": {
     "serverless-deployment-bucket": "^1.6.0",
     "serverless-layers": "^2.5.4",
-    "serverless-s3-sync": "^3.0.0",
-    "zenn-cli": "^0.1.114"
+    "serverless-s3-sync": "^3.0.0"
   }
 }
