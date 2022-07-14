@@ -36,8 +36,8 @@ const verifyToken = async (userId, idToken) => {
   }
   return {
     userId: response.data.sub,
-    displayName: response.data.displayName || '', // 権限によっては取得できない
-    pictureUrl: response.data.pictureUrl || '' // 権限によっては取得できない
+    displayName: response.data.name || '', // 権限によっては取得できない
+    pictureUrl: response.data.picture || '' // 権限によっては取得できない
   }
 }
 
