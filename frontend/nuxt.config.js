@@ -122,6 +122,7 @@ module.exports = {
       }
     }
   },
-  server: serverConfig
+  server: serverConfig,
+  telemetry: true
 }
 
