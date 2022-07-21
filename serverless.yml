@@ -6,8 +6,8 @@ custom:
     PUBLIC_BUCKET: ${self:custom.stack}
     DEPLOYMENT_BUCKET: ${self:custom.stack}-deployment
     S3_WEB_DOMAIN: ${self:custom.stack}.s3.${self:custom.region}.amazonaws.com
-    LINE_CHANNEL_ID: ${ssm:/${self:custom.stage}/${self:service}/LINE_CHANNEL_ID}
-    LIFF_ID: ${ssm:/${self:custom.stage}/${self:service}/LIFF_ID}
+    LINE_CHANNEL_ID: ${ssm:/${self:custom.stage}/${self:service}/LINE_CHANNEL_ID, ''}
+    LIFF_ID: ${ssm:/${self:custom.stage}/${self:service}/LIFF_ID, ''}
     USER_TABLE: ${self:custom.stack}-user
     VISIT_TABLE: ${self:custom.stack}-visit
   region: ${opt:region, self:provider.region}
